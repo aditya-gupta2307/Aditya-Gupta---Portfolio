@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Aditya Gupta</title>
+  <meta name="description" content="A little more about Aditya Gupta — Computer Science freshman at Purdue University." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Apply the saved theme BEFORE paint to avoid a flash. -->
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem("theme");
+        var t = s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo">Aditya<span>.</span></a>
+
+      <ul class="nav__links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="resume.html">Resume</a></li>
+      </ul>
+
+      <div style="display:flex; gap:.5rem; align-items:center;">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <button id="navBurger" class="nav__burger" aria-label="Open menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+
+  <main>
+
+    <!-- ===================== ABOUT INTRO ===================== -->
+    <section>
+      <div class="container">
+        <span class="section-label reveal">About me</span>
+        <h1 class="reveal">A bit about who I am<br />and what I enjoy.</h1>
+
+        <div class="about-grid">
+
+          <!-- LEFT column: the personal story -->
+          <div class="reveal">
+            <p class="lead">
+              Hey, I’m Aditya — a first-year Computer Science student at
+              Purdue University. I grew up in India and moved to West
+              Lafayette to study what I love: building software and
+              untangling hard problems.
+            </p>
+            <p>
+              I’ve always been the person who’d rather understand how
+              something works than just use it. That curiosity is what
+              pulled me toward Computer Science, and it’s also what keeps
+              me up late occasionally — chasing a bug, or learning a new
+              framework for no particular reason beyond “this looks cool.”
+            </p>
+            <p>
+              When I step away from the keyboard, I’m usually playing guitar
+              or digging into a puzzle someone swore was “impossible.” I
+              like that both hobbies share the same rhythm as programming:
+              small pieces, carefully arranged, turning into something
+              that feels bigger than the sum of its parts.
+            </p>
+            <p>
+              Right now, I’m focused on soaking up as much as I can during
+              my freshman year — classes, side projects, internships,
+              conversations. If any of that resonates with you, I’d love
+              to hear from you.
+            </p>
+
+            <h3 style="margin-top: 2rem;">What I’m into</h3>
+            <div class="hobby-chips">
+              <!-- EDIT: Add or remove chips as you like -->
+              <span class="chip">Coding</span>
+              <span class="chip">Solving complex problems</span>
+              <span class="chip">Playing guitar</span>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Where I’m headed</h3>
+            <p>
+              My long-term goal is to become a <strong>Software Engineer</strong>
+              at a team where craft, curiosity, and impact all matter.
+              Short term? Keep learning, keep building, keep shipping.
+            </p>
+
+            <!-- Tech skills pulled from resume — edit freely -->
+            <h3 style="margin-top: 2rem;">Tech I work with</h3>
+            <div class="hobby-chips">
+              <span class="chip">Java</span>
+              <span class="chip">C</span>
+              <span class="chip">Python</span>
+              <span class="chip">Git / GitHub</span>
+              <span class="chip">Linux / Unix CLI</span>
+              <span class="chip">VS Code</span>
+              <span class="chip">OOP</span>
+              <span class="chip">Data Structures</span>
+              <span class="chip">Algorithms</span>
+            </div>
+
+            <!-- Current coursework — edit each semester -->
+            <h3 style="margin-top: 2rem;">Recent coursework</h3>
+            <ul style="color: var(--color-text-muted); padding-left: 1.25rem; margin: 0;">
+              <li>CS 180 — Problem Solving & Object-Oriented Programming</li>
+              <li>CS 193 — Programming Tools</li>
+              <li>The Data Mine Seminar I</li>
+              <li>Calculus I</li>
+              <li>Microeconomics</li>
+              <li>Critical Thinking &amp; Communication</li>
+            </ul>
+          </div>
+
+
+          <!-- RIGHT column: quick-facts card -->
+          <div class="reveal">
+            <ul class="fact-list">
+              <li>
+                <span class="label">Year</span>
+                <span class="value">Freshman</span>
+              </li>
+              <li>
+                <span class="label">Major</span>
+                <span class="value">B.S. Computer Science</span>
+              </li>
+              <li>
+                <span class="label">University</span>
+                <span class="value">Purdue · West Lafayette</span>
+              </li>
+              <li>
+                <span class="label">Expected grad</span>
+                <span class="value">May 2029</span>
+              </li>
+              <li>
+                <span class="label">GPA</span>
+                <span class="value">3.69 / 4.00</span>
+              </li>
+              <li>
+                <span class="label">Honors</span>
+                <span class="value">Dean’s List · Semester Honors</span>
+              </li>
+              <li>
+                <span class="label">From</span>
+                <span class="value">India 🇮🇳</span>
+              </li>
+              <li>
+                <span class="label">Goal</span>
+                <span class="value">Software Engineer</span>
+              </li>
+              <li>
+                <span class="label">Email</span>
+                <span class="value" style="font-size:.9rem;">
+                  <a href="mailto:adityaa.2307@gmail.com">adityaa.2307@gmail.com</a>
+                </span>
+              </li>
+            </ul>
+
+            <div style="margin-top: 1.5rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+              <a href="resume.html"   class="btn btn--primary">View resume</a>
+              <a href="projects.html" class="btn btn--ghost">See projects</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="year"></span> Aditya Gupta · Built with HTML, CSS & JavaScript.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

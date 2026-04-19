@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Aditya Gupta</title>
+  <meta name="description" content="A few things Aditya Gupta has been working on." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Apply the saved theme BEFORE paint to avoid a flash. -->
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem("theme");
+        var t = s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo">Aditya<span>.</span></a>
+
+      <ul class="nav__links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="resume.html">Resume</a></li>
+      </ul>
+
+      <div style="display:flex; gap:.5rem; align-items:center;">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <button id="navBurger" class="nav__burger" aria-label="Open menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+
+  <main>
+
+    <!-- ===================== PROJECTS ===================== -->
+    <section>
+      <div class="container">
+        <span class="section-label reveal">Projects</span>
+        <h1 class="reveal">Things I’ve been building.</h1>
+        <p class="lead reveal">
+          A running collection of experiments, class projects, and
+          weekend builds. Each one taught me something new.
+        </p>
+
+        <!-- EDIT: To add / remove a project, copy one .project-card
+             block and change the text inside. -->
+        <div class="projects-grid">
+
+          <!-- PROJECT 1 -->
+          <article class="project-card reveal">
+            <span class="project-card__index">PROJECT 01</span>
+            <h3>Object-Oriented Java Projects</h3>
+            <p>
+              A collection of Java applications built during CS 180, using
+              encapsulation, inheritance, and polymorphism. Focused on
+              clean class design, modular code, and systematic testing
+              against edge cases.
+            </p>
+            <div class="project-card__tags">
+              <span>Java</span><span>OOP</span><span>Git</span>
+            </div>
+          </article>
+
+          <!-- PROJECT 2 -->
+          <article class="project-card reveal">
+            <span class="project-card__index">PROJECT 02</span>
+            <h3>ChordCraft</h3>
+            <p>
+              A small tool for guitarists that suggests chord progressions
+              based on mood and genre — born out of my own habit of
+              running out of ideas mid-jam.
+            </p>
+            <div class="project-card__tags">
+              <span>Python</span><span>Web Audio</span>
+            </div>
+          </article>
+
+          <!-- PROJECT 3 -->
+          <article class="project-card reveal">
+            <span class="project-card__index">PROJECT 03</span>
+            <h3>AlgoVisualizer</h3>
+            <p>
+              An interactive playground for watching common sorting
+              algorithms run step by step — built to make the ideas
+              stick a little better than a textbook ever could.
+            </p>
+            <div class="project-card__tags">
+              <span>JavaScript</span><span>Algorithms</span>
+            </div>
+          </article>
+
+        </div>
+
+        <p style="margin-top: 3rem; text-align: center;" class="reveal">
+          More coming soon. Want to collaborate?
+          <a href="mailto:adityaa.2307@gmail.com">Drop me a line</a>.
+        </p>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="year"></span> Aditya Gupta · Built with HTML, CSS & JavaScript.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

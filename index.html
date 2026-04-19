@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aditya Gupta — Portfolio</title>
+  <meta name="description" content="Aditya Gupta is a Computer Science freshman at Purdue University. Software engineer in training, problem solver, guitarist." />
+
+  <!-- Fonts: Inter (body) + Space Grotesk (headings) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="landing-animation.css" />
+
+  <!-- Apply the saved theme BEFORE paint to avoid a flash. -->
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem("theme");
+        var t = s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ============================================================
+       LANDING ANIMATION OVERLAY
+       ------------------------------------------------------------
+       A walking SVG character that greets the visitor.
+       To DISABLE: remove this entire block plus the
+       landing-animation.css <link> and landing-animation.js <script>.
+       To REPLAY every load: open landing-animation.js and set
+       storageKey to null inside CONFIG.
+       ============================================================ -->
+  <div class="landing" id="landing" role="dialog" aria-label="Welcome" aria-modal="true">
+
+    <!-- Skip button (keyboard-focusable; also triggered by Esc) -->
+    <button class="landing__skip" id="landingSkip" type="button">
+      Skip intro
+      <kbd>Esc</kbd>
+    </button>
+
+    <div class="landing__stage">
+
+      <!-- ==== Walking character ====
+           To swap the character, replace the <svg> block below.
+           Anything labeled walker__* is animated by the CSS. -->
+      <div class="landing__character">
+        <svg class="walker" viewBox="0 0 200 210" aria-hidden="true" focusable="false">
+          <!-- Ground shadow (pulses with bob) -->
+          <ellipse class="walker__shadow" cx="100" cy="200" rx="32" ry="5"/>
+
+          <!-- Body bobs up and down -->
+          <g class="walker__body">
+            <!-- Head + torso -->
+            <circle class="walker__head" cx="100" cy="35" r="17"/>
+            <line   class="walker__torso" x1="100" y1="52" x2="100" y2="120"/>
+
+            <!-- Arms — pivot at shoulder (100, 62) -->
+            <g transform="translate(100 62)">
+              <g class="walker__limb walker__limb--a">
+                <line x1="0" y1="0" x2="0" y2="46"/>
+              </g>
+            </g>
+            <g transform="translate(100 62)">
+              <g class="walker__limb walker__limb--b">
+                <line x1="0" y1="0" x2="0" y2="46"/>
+              </g>
+            </g>
+
+            <!-- Legs — pivot at hip (100, 120). Phases are opposite
+                 to the arms so left-leg/right-arm move together. -->
+            <g transform="translate(100 120)">
+              <g class="walker__limb walker__limb--b">
+                <line   x1="0"  y1="0"  x2="0" y2="60"/>
+                <ellipse cx="0" cy="63" rx="9" ry="4"/>
+              </g>
+            </g>
+            <g transform="translate(100 120)">
+              <g class="walker__limb walker__limb--a">
+                <line   x1="0"  y1="0"  x2="0" y2="60"/>
+                <ellipse cx="0" cy="63" rx="9" ry="4"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- ==== Headline (fades in mid-walk) ==== -->
+      <div class="landing__copy">
+        <p class="landing__eyebrow">Hello —</p>
+        <h1 class="landing__title">
+          I’m <span class="landing__name">Aditya</span>.
+        </h1>
+        <p class="landing__sub">
+          Welcome to my corner of the internet.
+        </p>
+      </div>
+
+    </div>
+  </div>
+  <!-- ============================================================ -->
+
+  <!-- ===================== NAVIGATION =====================
+       Same nav lives on every page. If you add a new page,
+       add one more <li> below. -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo">Aditya<span>.</span></a>
+
+      <ul class="nav__links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="resume.html">Resume</a></li>
+      </ul>
+
+      <div style="display:flex; gap:.5rem; align-items:center;">
+        <!-- Theme toggle -->
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+
+        <!-- Mobile menu button -->
+        <button id="navBurger" class="nav__burger" aria-label="Open menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===================== HERO =====================
+         EDIT your name, tagline, and intro below. -->
+    <section class="hero">
+      <div class="container">
+
+        <!-- Profile photo. Place your image at assets/profile.jpg
+             or change the src below to point to your file. -->
+        <div class="hero__avatar reveal">
+          <img src="assets/profile.jpg" alt="Portrait of Aditya Gupta"
+               onerror="this.style.display='none'; this.parentElement.textContent='AG';" />
+        </div>
+
+        <!-- EDIT: Your name -->
+        <h1 class="hero__name reveal">
+          Hi, I’m <span class="accent">Aditya</span>.
+        </h1>
+
+        <!-- EDIT: Short tagline -->
+        <p class="hero__tagline reveal">
+          CS freshman at Purdue — turning curiosity into code,
+          and chaos into chords.
+        </p>
+
+        <!-- EDIT: Short welcome paragraph -->
+        <p class="hero__intro reveal">
+          I build small, thoughtful things with software and spend my
+          free time chasing tricky problems and the right guitar chord.
+          Welcome to my corner of the internet.
+        </p>
+
+        <div class="hero__actions reveal">
+          <a href="about.html"    class="btn btn--primary">About me →</a>
+          <a href="projects.html" class="btn btn--ghost">See projects</a>
+          <a href="resume.html"   class="btn btn--ghost">Resume</a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===================== QUICK HIGHLIGHTS ===================== -->
+    <section>
+      <div class="container">
+        <span class="section-label reveal">At a glance</span>
+        <h2 class="reveal">A few things about me</h2>
+
+        <div class="projects-grid">
+          <div class="project-card reveal">
+            <span class="project-card__index">01</span>
+            <h3>Studying at Purdue</h3>
+            <p>First-year Computer Science student in West Lafayette, originally from India.</p>
+          </div>
+          <div class="project-card reveal">
+            <span class="project-card__index">02</span>
+            <h3>Building software</h3>
+            <p>Writing code, learning new languages, and shipping small projects whenever I can.</p>
+          </div>
+          <div class="project-card reveal">
+            <span class="project-card__index">03</span>
+            <h3>Off the keyboard</h3>
+            <p>When I’m not debugging, I’m probably solving puzzles or practicing guitar.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===================== CONTACT CTA ===================== -->
+    <section>
+      <div class="container">
+        <div class="contact-card reveal">
+          <span class="section-label">Get in touch</span>
+          <h2>Let’s build something together.</h2>
+          <p class="lead" style="margin: 0 auto;">
+            I’m always happy to chat about internships, projects, or music.
+            The fastest way to reach me is email — or pick your favorite below.
+          </p>
+
+          <div class="socials">
+            <!-- EDIT: Update these links in every HTML file -->
+            <a class="social-btn" href="mailto:adityaa.2307@gmail.com" aria-label="Email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Email
+            </a>
+            <a class="social-btn" href="https://www.linkedin.com/in/adityagupta2307" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.62 0 4.29 2.38 4.29 5.48v6.26zM5.34 7.43a2.06 2.06 0 11.01-4.13 2.06 2.06 0 01-.01 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+              LinkedIn
+            </a>
+            <a class="social-btn" href="https://github.com/aditya-gupta2307" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 00-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 016 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0012 .3"/></svg>
+              GitHub
+            </a>
+            <a class="social-btn" href="https://www.instagram.com/_adityaagupta/" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              Instagram
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="year"></span> Aditya Gupta · Built with HTML, CSS & JavaScript.</p>
+    </div>
+  </footer>
+
+  <script src="landing-animation.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
