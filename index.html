@@ -27,87 +27,138 @@
 </head>
 <body>
 
-  <!-- ============================================================
-       LANDING ANIMATION OVERLAY
-       ------------------------------------------------------------
-       A walking SVG character that greets the visitor.
-       To DISABLE: remove this entire block plus the
-       landing-animation.css <link> and landing-animation.js <script>.
-       To REPLAY every load: open landing-animation.js and set
-       storageKey to null inside CONFIG.
-       ============================================================ -->
+  <!-- ==========================================================
+       CINEMATIC LANDING OVERLAY
+       ----------------------------------------------------------
+       Elegant walking figure + word-by-word headline reveal.
+       Dismisses on Skip, Esc, scroll, or any click on the
+       overlay background.
+
+       To DISABLE the intro entirely: delete this <div> plus the
+       three <script> tags near </body> (gsap, ScrollTrigger,
+       landing-animation.js) and the <link> to
+       landing-animation.css above.
+
+       To REPLAY the intro on every page load (e.g. while
+       tweaking it), open landing-animation.js and set
+       storageKey: null in the CFG block.
+       ========================================================== -->
   <div class="landing" id="landing" role="dialog" aria-label="Welcome" aria-modal="true">
 
-    <!-- Skip button (keyboard-focusable; also triggered by Esc) -->
+    <!-- Background atmosphere: soft parallax glow that follows cursor -->
+    <div class="landing__glow" aria-hidden="true"></div>
+
+    <!-- Skip button (glass pill top-right) -->
     <button class="landing__skip" id="landingSkip" type="button">
-      Skip intro
-      <kbd>Esc</kbd>
+      Skip intro <kbd>Esc</kbd>
     </button>
 
     <div class="landing__stage">
 
-      <!-- ==== Walking character ====
-           To swap the character, replace the <svg> block below.
-           Anything labeled walker__* is animated by the CSS. -->
+      <!-- ========================================================
+           ARTICULATED FIGURE (SVG)
+           To swap for a different character: replace this <svg>
+           block but keep the data-joint attributes intact — the
+           GSAP walk cycle targets those selectors.
+           Joints and anchor points:
+             thigh-front / thigh-back   pivot at hips
+             calf-front  / calf-back    pivot at knees
+             upper-front / upper-back   pivot at shoulders
+             fore-front  / fore-back    pivot at elbows
+           ======================================================== -->
       <div class="landing__character">
-        <svg class="walker" viewBox="0 0 200 210" aria-hidden="true" focusable="false">
-          <!-- Ground shadow (pulses with bob) -->
-          <ellipse class="walker__shadow" cx="100" cy="200" rx="32" ry="5"/>
+        <svg class="walker" viewBox="0 0 200 320" aria-hidden="true" focusable="false">
 
-          <!-- Body bobs up and down -->
+          <!-- Foot shadow (pulses with body bob) -->
+          <ellipse class="walker__shadow" cx="100" cy="310" rx="42" ry="5"/>
+
+          <!-- Whole figure (bobs vertically) -->
           <g class="walker__body">
-            <!-- Head + torso -->
-            <circle class="walker__head" cx="100" cy="35" r="17"/>
-            <line   class="walker__torso" x1="100" y1="52" x2="100" y2="120"/>
 
-            <!-- Arms — pivot at shoulder (100, 62) -->
-            <g transform="translate(100 62)">
-              <g class="walker__limb walker__limb--a">
-                <line x1="0" y1="0" x2="0" y2="46"/>
-              </g>
-            </g>
-            <g transform="translate(100 62)">
-              <g class="walker__limb walker__limb--b">
-                <line x1="0" y1="0" x2="0" y2="46"/>
+            <!-- BACK LEG (rendered first so it sits behind) -->
+            <g class="jt" data-joint="thigh-back" style="transform-origin: 92px 158px;">
+              <line class="seg-thigh" x1="92" y1="158" x2="92" y2="225"/>
+              <g class="jt" data-joint="calf-back" style="transform-origin: 92px 225px;">
+                <line class="seg-calf" x1="92" y1="225" x2="92" y2="293"/>
+                <ellipse class="seg-foot" cx="92" cy="296" rx="11" ry="3.5"/>
               </g>
             </g>
 
-            <!-- Legs — pivot at hip (100, 120). Phases are opposite
-                 to the arms so left-leg/right-arm move together. -->
-            <g transform="translate(100 120)">
-              <g class="walker__limb walker__limb--b">
-                <line   x1="0"  y1="0"  x2="0" y2="60"/>
-                <ellipse cx="0" cy="63" rx="9" ry="4"/>
+            <!-- FRONT LEG -->
+            <g class="jt" data-joint="thigh-front" style="transform-origin: 108px 158px;">
+              <line class="seg-thigh" x1="108" y1="158" x2="108" y2="225"/>
+              <g class="jt" data-joint="calf-front" style="transform-origin: 108px 225px;">
+                <line class="seg-calf" x1="108" y1="225" x2="108" y2="293"/>
+                <ellipse class="seg-foot" cx="108" cy="296" rx="11" ry="3.5"/>
               </g>
             </g>
-            <g transform="translate(100 120)">
-              <g class="walker__limb walker__limb--a">
-                <line   x1="0"  y1="0"  x2="0" y2="60"/>
-                <ellipse cx="0" cy="63" rx="9" ry="4"/>
+
+            <!-- TORSO — shoulders taper to waist (trapezoid with soft corners) -->
+            <path class="torso" d="
+              M 76 56
+              Q 76 52 80 52
+              L 120 52
+              Q 124 52 124 56
+              L 121 160
+              L 79 160
+              Z" />
+
+            <!-- HEAD -->
+            <ellipse class="head" cx="100" cy="30" rx="18" ry="22"/>
+
+            <!-- BACK ARM -->
+            <g class="jt" data-joint="upper-back" style="transform-origin: 80px 60px;">
+              <line class="seg-upper" x1="80" y1="60" x2="80" y2="115"/>
+              <g class="jt" data-joint="fore-back" style="transform-origin: 80px 115px;">
+                <line class="seg-fore" x1="80" y1="115" x2="80" y2="160"/>
+                <circle class="seg-hand" cx="80" cy="163" r="5"/>
               </g>
             </g>
+
+            <!-- FRONT ARM -->
+            <g class="jt" data-joint="upper-front" style="transform-origin: 120px 60px;">
+              <line class="seg-upper" x1="120" y1="60" x2="120" y2="115"/>
+              <g class="jt" data-joint="fore-front" style="transform-origin: 120px 115px;">
+                <line class="seg-fore" x1="120" y1="115" x2="120" y2="160"/>
+                <circle class="seg-hand" cx="120" cy="163" r="5"/>
+              </g>
+            </g>
+
           </g>
         </svg>
       </div>
 
-      <!-- ==== Headline (fades in mid-walk) ==== -->
+      <!-- ========================================================
+           HEADLINE — word-by-word staggered reveal.
+           Each .word is animated individually by GSAP.
+           ======================================================== -->
       <div class="landing__copy">
         <p class="landing__eyebrow">Hello —</p>
         <h1 class="landing__title">
-          I’m <span class="landing__name">Aditya</span>.
+          <span class="word">Hi,</span>
+          <span class="word">I’m</span>
+          <span class="word"><span class="landing__name">Aditya</span>.</span>
         </h1>
         <p class="landing__sub">
-          Welcome to my corner of the internet.
+          Computer Science · Purdue University — building software,
+          solving problems, playing guitar.
         </p>
       </div>
 
     </div>
-  </div>
-  <!-- ============================================================ -->
 
-  <!-- ===================== NAVIGATION =====================
-       Same nav lives on every page. If you add a new page,
-       add one more <li> below. -->
+    <!-- Scroll hint at the bottom -->
+    <div class="landing__scroll-hint" aria-hidden="true">
+      <span>Scroll to explore</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 9 L12 15 L18 9"/>
+      </svg>
+    </div>
+  </div>
+  <!-- ========================================================== -->
+
+
+  <!-- ===================== NAVIGATION ===================== -->
   <header class="nav">
     <div class="nav__inner">
       <a href="index.html" class="nav__logo">Aditya<span>.</span></a>
@@ -120,13 +171,10 @@
       </ul>
 
       <div style="display:flex; gap:.5rem; align-items:center;">
-        <!-- Theme toggle -->
         <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         </button>
-
-        <!-- Mobile menu button -->
         <button id="navBurger" class="nav__burger" aria-label="Open menu" aria-expanded="false">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
@@ -136,30 +184,23 @@
 
   <main>
 
-    <!-- ===================== HERO =====================
-         EDIT your name, tagline, and intro below. -->
+    <!-- ===================== HERO ===================== -->
     <section class="hero">
       <div class="container">
-
-        <!-- Profile photo. Place your image at assets/profile.jpg
-             or change the src below to point to your file. -->
         <div class="hero__avatar reveal">
           <img src="assets/profile.jpg" alt="Portrait of Aditya Gupta"
                onerror="this.style.display='none'; this.parentElement.textContent='AG';" />
         </div>
 
-        <!-- EDIT: Your name -->
         <h1 class="hero__name reveal">
           Hi, I’m <span class="accent">Aditya</span>.
         </h1>
 
-        <!-- EDIT: Short tagline -->
         <p class="hero__tagline reveal">
           CS freshman at Purdue — turning curiosity into code,
           and chaos into chords.
         </p>
 
-        <!-- EDIT: Short welcome paragraph -->
         <p class="hero__intro reveal">
           I build small, thoughtful things with software and spend my
           free time chasing tricky problems and the right guitar chord.
@@ -214,7 +255,6 @@
           </p>
 
           <div class="socials">
-            <!-- EDIT: Update these links in every HTML file -->
             <a class="social-btn" href="mailto:adityaa.2307@gmail.com" aria-label="Email">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               Email
@@ -246,6 +286,15 @@
     </div>
   </footer>
 
+
+  <!-- ==========================================================
+       SCRIPTS
+       GSAP + ScrollTrigger load from cdnjs. If they fail to load
+       (offline, CDN blocked), landing-animation.js falls back
+       gracefully to a simple fade-in.
+       ========================================================== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="landing-animation.js"></script>
   <script src="script.js"></script>
 </body>
