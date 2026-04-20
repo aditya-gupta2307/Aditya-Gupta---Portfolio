@@ -1,29 +1,19 @@
 /* =========================================================
-   Landing Animation Component
+   Landing Animation — Cinematic v2
    ---------------------------------------------------------
-   A reusable full-screen intro: a minimalist SVG character
-   walks in from the left, then the headline fades in.
+   A premium intro: an articulated SVG human figure walks in,
+   headline reveals word-by-word, character exits on scroll.
 
-   QUICK EDIT MAP (variables below):
-     --landing-walk-duration : how long the walk takes
-     --landing-step-duration : length of one arm/leg swing
-     --landing-step-count    : number of swings (walk/step)
-     --landing-char-size     : character width
-     --landing-char-color    : silhouette color
-     --landing-bg-1 / --bg-2 : gradient background colors
-
-   Matches walk/step math: walk = step × count.
-   Default: 3s = 0.6s × 5  (character ends in neutral pose)
+   Design system variables live at the top. All motion is
+   driven by GSAP (landing-animation.js) so this file holds
+   only layout, look, and fallbacks.
    ========================================================= */
 
 .landing {
-  /* ---- Timing & sizing (edit freely) ---- */
-  --landing-walk-duration: 3s;
-  --landing-step-duration: 0.6s;
-  --landing-step-count: 5;
-  --landing-char-size: clamp(120px, 18vw, 180px);
+  /* ---- Tuning (edit freely) ---- */
+  --landing-char-size: clamp(190px, 22vw, 280px);
   --landing-char-color: var(--color-primary, #4f46e5);
-  --landing-leave-duration: 0.6s;
+  --landing-leave-duration: 700ms;
 
   /* ---- Layout ---- */
   position: fixed;
@@ -32,57 +22,88 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
   overflow: hidden;
+  padding: clamp(1rem, 4vw, 3rem);
 
-  /* Soft two-tone gradient that respects the site's theme.
-     Swap to a plain color if preferred. */
+  /* ---- Cinematic background: layered gradients + soft grain feel ---- */
   background:
-    radial-gradient(ellipse at 18% 30%,
-      color-mix(in srgb, var(--color-primary, #4f46e5) 14%, transparent) 0%,
-      transparent 55%),
-    radial-gradient(ellipse at 82% 72%,
-      color-mix(in srgb, var(--color-secondary, #f59e0b) 10%, transparent) 0%,
-      transparent 55%),
-    var(--color-bg, #fafaf7);
+    radial-gradient(ellipse 80% 60% at 15% 40%,
+      color-mix(in srgb, var(--color-primary, #4f46e5) 18%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 70% 70% at 85% 70%,
+      color-mix(in srgb, var(--color-secondary, #f59e0b) 14%, transparent) 0%,
+      transparent 60%),
+    linear-gradient(135deg,
+      var(--color-bg, #fafaf7) 0%,
+      color-mix(in srgb, var(--color-bg, #fafaf7) 92%,
+                var(--color-primary, #4f46e5)) 100%);
 
   transition:
-    opacity var(--landing-leave-duration) ease-out,
-    visibility var(--landing-leave-duration) ease-out;
+    opacity var(--landing-leave-duration) cubic-bezier(0.4, 0, 0.2, 1),
+    visibility var(--landing-leave-duration) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* State applied just before the overlay is removed */
 .landing--leaving {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
 
+/* Soft animated glow that sits BEHIND the character — follows cursor via JS */
+.landing__glow {
+  position: absolute;
+  top: 50%;
+  left: 28%;
+  width: 52vmin;
+  height: 52vmin;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--color-primary, #4f46e5) 28%, transparent) 0%,
+    transparent 60%);
+  filter: blur(10px);
+  pointer-events: none;
+  will-change: transform;
+  z-index: 0;
+}
+
+/* Subtle vignette on top for depth */
+.landing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center,
+    transparent 40%,
+    color-mix(in srgb, #000 7%, transparent) 100%);
+  z-index: 1;
+}
+
 
 /* ---------------------------------------------------------
-   SKIP BUTTON
+   SKIP BUTTON  (glassmorphic pill, top-right)
    --------------------------------------------------------- */
 .landing__skip {
   position: absolute;
   top: clamp(1rem, 3vh, 2rem);
-  right: clamp(1rem, 3vh, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.5rem 0.95rem;
-  background: color-mix(in srgb, var(--color-bg, #fff) 82%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border, #e5e5e5);
+  gap: 0.55rem;
+  padding: 0.55rem 1.1rem;
+  background: color-mix(in srgb, var(--color-surface, #fff) 55%, transparent);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid color-mix(in srgb, var(--color-text, #000) 12%, transparent);
   border-radius: 999px;
   color: var(--color-text, #18181b);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  z-index: 2;
-  transition: all 0.2s ease;
-  animation: landing-skip-in 0.35s ease-out both;
+  z-index: 3;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  animation: skip-fade-in 0.6s ease-out 0.8s forwards;
 }
 .landing__skip:hover,
 .landing__skip:focus-visible {
@@ -94,200 +115,227 @@
 .landing__skip kbd {
   font: inherit;
   font-size: 0.68rem;
-  padding: 0.1rem 0.4rem;
+  padding: 0.12rem 0.42rem;
   border-radius: 4px;
   background: color-mix(in srgb, currentColor 14%, transparent);
   line-height: 1;
+  letter-spacing: 0.04em;
 }
 
-@keyframes landing-skip-in {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes skip-fade-in {
+  to { opacity: 1; }
 }
 
 
 /* ---------------------------------------------------------
-   STAGE  (walker + copy, flex-laid-out)
+   STAGE — character + copy flex layout
    --------------------------------------------------------- */
 .landing__stage {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(1.5rem, 5vw, 3rem);
-  max-width: 900px;
+  gap: clamp(1.5rem, 6vw, 5rem);
   width: 100%;
+  max-width: 1100px;
 }
 
-.landing__character { flex-shrink: 0; }
-.landing__copy      { flex-shrink: 1; min-width: 0; max-width: 28rem; }
+.landing__character {
+  flex-shrink: 0;
+  will-change: transform;
+}
 
-@media (max-width: 640px) {
+.landing__copy {
+  max-width: 28rem;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
   .landing__stage {
     flex-direction: column;
     text-align: center;
-    gap: 1.25rem;
+    gap: 2rem;
   }
+  .landing__copy { text-align: center; }
 }
 
 
 /* ---------------------------------------------------------
-   WALKING CHARACTER (SVG)
-   Each limb is a <g> rotated around its joint (shoulder/hip).
-   The whole figure translates horizontally.
-   The body group bobs vertically. Shadow pulses.
+   SVG FIGURE — articulated, filled, proportioned silhouette
    --------------------------------------------------------- */
 .walker {
   width: var(--landing-char-size);
   height: auto;
   display: block;
   color: var(--landing-char-color);
-  /* Horizontal walk-in: from off-screen left to natural flex position */
-  animation: walker-walk-in var(--landing-walk-duration)
-             cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  will-change: transform;
+  /* No CSS animation here — GSAP drives everything.
+     (See fallback block further down.) */
 }
 
-@keyframes walker-walk-in {
-  from { transform: translateX(-60vw); }
-  to   { transform: translateX(0); }
+/* Filled body parts */
+.walker .torso,
+.walker .head,
+.walker .seg-hand,
+.walker .seg-foot {
+  fill: currentColor;
 }
 
-/* Figure pieces inherit color */
-.walker__head                 { fill: currentColor; }
-.walker__torso,
-.walker__limb line            { stroke: currentColor; stroke-linecap: round; fill: none; }
-.walker__torso                { stroke-width: 7; }
-.walker__limb line            { stroke-width: 6; }
-.walker__limb ellipse         { fill: currentColor; }
-.walker__shadow               { fill: rgba(0, 0, 0, 0.14); }
-html[data-theme="dark"] .walker__shadow { fill: rgba(0, 0, 0, 0.45); }
+/* Limb segments are thick lines with rounded caps.
+   Different widths create a natural taper (upper > lower). */
+.walker .seg-upper { stroke: currentColor; stroke-width: 14; stroke-linecap: round; fill: none; }
+.walker .seg-fore  { stroke: currentColor; stroke-width: 11; stroke-linecap: round; fill: none; }
+.walker .seg-thigh { stroke: currentColor; stroke-width: 18; stroke-linecap: round; fill: none; }
+.walker .seg-calf  { stroke: currentColor; stroke-width: 14; stroke-linecap: round; fill: none; }
 
-/* Body bob: double frequency of the leg swing (2 bounces per step) */
-.walker__body {
-  animation: walker-bob
-             calc(var(--landing-step-duration) / 2)
-             ease-in-out
-             calc(var(--landing-step-count) * 2)
-             forwards;
-}
-@keyframes walker-bob {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-4px); }
-}
-
-/* Shadow pulses opposite the bob (flatter when figure lifts) */
+/* Shadow beneath the feet */
 .walker__shadow {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: walker-shadow
-             calc(var(--landing-step-duration) / 2)
-             ease-in-out
-             calc(var(--landing-step-count) * 2)
-             forwards;
+  fill: rgba(0, 0, 0, 0.18);
 }
-@keyframes walker-shadow {
-  0%, 100% { transform: scaleX(1);    opacity: 0.32; }
-  50%      { transform: scaleX(0.88); opacity: 0.22; }
+html[data-theme="dark"] .walker__shadow {
+  fill: rgba(0, 0, 0, 0.5);
 }
 
-/* Limb swing — phase A (forward at 25%, back at 75%) */
-.walker__limb--a {
-  animation: walker-swing-a var(--landing-step-duration)
-             ease-in-out var(--landing-step-count) forwards;
-}
-/* Phase B is the mirror (back at 25%, forward at 75%) */
-.walker__limb--b {
-  animation: walker-swing-b var(--landing-step-duration)
-             ease-in-out var(--landing-step-count) forwards;
-}
-@keyframes walker-swing-a {
-  0%, 100% { transform: rotate(0deg); }
-  25%      { transform: rotate(24deg); }
-  75%      { transform: rotate(-24deg); }
-}
-@keyframes walker-swing-b {
-  0%, 100% { transform: rotate(0deg); }
-  25%      { transform: rotate(-24deg); }
-  75%      { transform: rotate(24deg); }
+/* Joints — GSAP rotates these; style hints the transform setup */
+.walker .jt {
+  transform-box: fill-box;
 }
 
 
 /* ---------------------------------------------------------
-   COPY (name + tagline) — fades in mid-walk
+   HEADLINE COPY (word-by-word fade — driven by GSAP)
    --------------------------------------------------------- */
-.landing__copy {
-  opacity: 0;
-  transform: translateY(14px);
-  animation: landing-copy-in 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  /* Start fading in ~55% through the walk, so content
-     "meets" the character as it arrives at center. */
-  animation-delay: calc(var(--landing-walk-duration) * 0.55);
-}
-
-@keyframes landing-copy-in {
-  to { opacity: 1; transform: translateY(0); }
-}
-
 .landing__eyebrow {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   color: var(--color-primary, #4f46e5);
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.9rem;
+  opacity: 0;
 }
 
 .landing__title {
   font-family: var(--font-heading, inherit);
-  font-size: clamp(2rem, 5vw, 3.25rem);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  margin: 0 0 0.65rem;
+  font-size: clamp(2.25rem, 5.5vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0 0 1rem;
   color: var(--color-text, #18181b);
 }
-.landing__title .landing__name {
+.landing__title .word {
+  display: inline-block;
+  margin-right: 0.25em;
+  /* Start hidden — GSAP fades each word in. */
+  opacity: 0;
+  transform: translateY(30px);
+}
+.landing__name {
   color: var(--color-primary, #4f46e5);
 }
 
 .landing__sub {
-  font-size: clamp(0.98rem, 1.5vw, 1.1rem);
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
   color: var(--color-text-muted, #52525b);
   margin: 0;
   max-width: 26rem;
+  opacity: 0;
 }
 
 
 /* ---------------------------------------------------------
-   ACCESSIBILITY — prefers-reduced-motion
-   Replace the whole walk with a calm fade-in.
+   SCROLL HINT — bottom-center
+   --------------------------------------------------------- */
+.landing__scroll-hint {
+  position: absolute;
+  bottom: clamp(1.2rem, 4vh, 2.2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 3;
+  opacity: 0;
+  color: var(--color-text-muted, #52525b);
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.landing__scroll-hint svg {
+  width: 22px;
+  height: 22px;
+  animation: scroll-bounce 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%      { transform: translateY(6px); opacity: 1; }
+}
+
+
+/* ---------------------------------------------------------
+   NO-GSAP FALLBACK
+   If GSAP fails to load, everything fades in simply and
+   the overlay dismisses quickly. No walk cycle.
+   --------------------------------------------------------- */
+.landing--no-gsap .walker,
+.landing--no-gsap .landing__eyebrow,
+.landing--no-gsap .landing__title .word,
+.landing--no-gsap .landing__sub {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: simple-fade 0.6s ease-out both;
+}
+.landing--no-gsap .walker           { animation-delay: 0.05s; }
+.landing--no-gsap .landing__eyebrow { animation-delay: 0.25s; }
+.landing--no-gsap .landing__title   { animation-delay: 0.35s; }
+.landing--no-gsap .landing__sub     { animation-delay: 0.5s; }
+
+@keyframes simple-fade {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+   Disable all walk/parallax/stagger motion. Calm fade only.
    --------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .walker,
-  .walker__body,
-  .walker__shadow,
-  .walker__limb--a,
-  .walker__limb--b {
+  .walker *,
+  .landing__glow {
     animation: none !important;
     transform: none !important;
   }
-
-  .landing__copy,
+  .landing__title .word,
+  .landing__eyebrow,
+  .landing__sub,
+  .walker,
   .landing__skip {
-    animation: landing-simple-fade 0.5s ease-out both;
+    opacity: 1 !important;
+    transform: none !important;
+    animation: simple-fade 0.5s ease-out both !important;
   }
-
-  .walker {
-    animation: landing-simple-fade 0.6s ease-out both;
-  }
-
-  @keyframes landing-simple-fade {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
+  .landing__scroll-hint svg { animation: none; }
 }
 
-/* JS also adds this class as a belt-and-braces fallback */
 .landing--reduced .walker,
-.landing--reduced .landing__copy {
-  animation: landing-simple-fade 0.5s ease-out both;
+.landing--reduced .walker *,
+.landing--reduced .landing__glow {
+  animation: none !important;
+  transform: none !important;
+}
+.landing--reduced .landing__title .word,
+.landing--reduced .landing__eyebrow,
+.landing--reduced .landing__sub,
+.landing--reduced .walker {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: simple-fade 0.5s ease-out both !important;
 }
